@@ -15,6 +15,8 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
     private DWGraph_DS _graph;
     NodeComparator _comp = new NodeComparator(); //a custom comparator for to compare between node in the algorithms
 
+    public DWGraphs_Algo(){}
+
     public DWGraphs_Algo(directed_weighted_graph g){
         _graph = (DWGraph_DS) g;
     }
@@ -238,16 +240,40 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
             _graph = newGr;
             return true;
         }
-        catch (FileNotFoundException e){
-            e.printStackTrace();
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
         catch (Exception e){
             e.printStackTrace();
         }
         return false;
+    }
+
+    public directed_weighted_graph Json2Graph(String Jstr){
+        DWGraph_DS newGr = new DWGraph_DS();
+        JsonObject json_obj;
+        json_obj = JsonParser.parseString(Jstr).getAsJsonObject();
+        JsonArray Jnodes = json_obj.getAsJsonArray("Nodes");
+        for(JsonElement node : Jnodes){
+            JsonObject temp = (JsonObject) node;
+            int id = temp.get("id").getAsInt();
+            NodeData newNode = new NodeData(id);
+            String pos = temp.get("pos").getAsString();
+            int firstComma = pos.indexOf(",");
+            int lastComma = pos.lastIndexOf(",");
+            double x = Double.parseDouble(pos.substring(0,firstComma));
+            double y = Double.parseDouble(pos.substring(firstComma+1,lastComma));
+            double z = Double.parseDouble(pos.substring(lastComma+1));
+            GeoLocation GL = new GeoLocation(x,y,z);
+            newNode.setLocation(GL);
+            newGr.addNode(newNode);
+        }
+        JsonArray Jedges = json_obj.getAsJsonArray("Edges");
+        for(JsonElement edge : Jedges){
+            JsonObject temp = (JsonObject) edge;
+            int src = temp.get("src").getAsInt();
+            int dest = temp.get("dest").getAsInt();
+            double weight = temp.get("w").getAsDouble();
+            newGr.connect(src,dest,weight);
+        }
+        return newGr;
     }
 
     private void clearTag(){
