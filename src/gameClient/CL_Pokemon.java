@@ -10,6 +10,7 @@ public class CL_Pokemon {
     private Point3D _pos;
     private double min_dist;
     private int min_ro;
+ //   public boolean flag = false;
 
     public CL_Pokemon(Point3D p, int t, double v, double s, edge_data e) {
         _type = t;

@@ -2,14 +2,10 @@ package gameClient;
 
 import Server.Game_Server_Ex2;
 import api.*;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 public class Ex2 implements Runnable{
@@ -20,6 +16,7 @@ public class Ex2 implements Runnable{
     private static int _scenario = 0;
     private static int moves = 0;
     private static List<node_data> _path = null;
+    private static ArrayList<Thread> agents = new ArrayList<>();
     private static directed_weighted_graph _graph;
 
     public static void main(String[] a) {
@@ -28,7 +25,7 @@ public class Ex2 implements Runnable{
         Thread client = new Thread(new Ex2());
         while(log.isOpen()){
             try {
-                client.sleep(1);
+                client.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -52,9 +49,12 @@ public class Ex2 implements Runnable{
         _win.setTitle("Ex2 - OOP: (NONE trivial Solution) "+game.toString());
         int ind=0;
         long dt=100;
-
+        moveAgents(game);
+        for(Thread thread : agents){
+            thread.start();
+        }
         while(game.isRunning()) {
-            moveAgents(game);
+       //     moveAgents(game);
             try {
                 if(ind%1==0) {_win.repaint();}
                 Thread.sleep(dt);
@@ -69,17 +69,11 @@ public class Ex2 implements Runnable{
         System.out.println(res);
         System.exit(0);
     }
-    /**
-     * Moves each of the agents along the edge,
-     * in case the agent is on a node the next destination (next edge).
-     * @param game
-     * @param gg
-     * @param
-     */
+
     private void moveAgents(game_service game) {
         String lg = game.move();
         moves++;
-       // System.out.println(moves);                         //count the moves rate
+       // System.out.println(moves);                         //count the rate of moves
         List<CL_Agent> log = Arena.getAgents(lg, _graph);
         _ar.setAgents(log);
         String fs =  game.getPokemons();
@@ -88,9 +82,13 @@ public class Ex2 implements Runnable{
         for(int i=0;i<log.size();i++) {
             CL_Agent ag = log.get(i);
             int id = ag.getID();
+            System.out.println(id);
             int dest = ag.getNextNode();
             int src = ag.getSrcNode();
             double v = ag.getValue();
+            Agent agent = new Agent(_ar,ag,_graph,game);
+            Thread thread = new Thread(agent);
+            agents.add(thread);
             if(dest==-1) {
                 dest = nextNode(src);
                 game.chooseNextEdge(ag.getID(), dest);
@@ -159,7 +157,7 @@ public class Ex2 implements Runnable{
             int rs = ttt.getInt("agents");
             System.out.println(info);
             System.out.println(game.getPokemons());
-            int src_node = 0;  // arbitrary node, you should start at one of the pokemon
+            //int src_node = 0;  // arbitrary node, you should start at one of the pokemon
             ArrayList<CL_Pokemon> cl_fs = Arena.json2Pokemons(game.getPokemons());
             for(int a = 0;a<cl_fs.size();a++) { Arena.updateEdge(cl_fs.get(a),_graph);}
             for(int a = 0;a<rs;a++) {
