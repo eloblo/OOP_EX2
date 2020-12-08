@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-class NodeData implements node_data{
+public class NodeData implements node_data{
 
     private int _key;
     private double _weight = 0;

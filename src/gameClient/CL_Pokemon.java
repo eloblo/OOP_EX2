@@ -10,7 +10,6 @@ public class CL_Pokemon {
     private Point3D _pos;
     private double min_dist;
     private int min_ro;
- //   public boolean flag = false;
 
     public CL_Pokemon(Point3D p, int t, double v, double s, edge_data e) {
         _type = t;
@@ -21,6 +20,7 @@ public class CL_Pokemon {
         min_dist = -1;
         min_ro = -1;
     }
+
     public static CL_Pokemon init_from_json(String json) {
         CL_Pokemon ans = null;
         try {
