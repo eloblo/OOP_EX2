@@ -2,7 +2,6 @@ package gameClient;
 
 import api.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -84,9 +83,6 @@ public class Mover {
         weight *= 1000;
         slpTime = weight/speed;
         slpTime++;
-    //    System.out.println(_agent.getLocation());
-    //    System.out.println(_pokemon.getLocation());
-    //    System.out.println(pokEdge.getSrc()+","+ pokEdge.getDest());
         return (long) slpTime;
     }
 

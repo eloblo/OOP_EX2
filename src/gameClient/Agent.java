@@ -9,7 +9,6 @@ public class Agent implements Runnable {
 
     private static Arena _ar;
     private CL_Agent _agent;
- //   private CL_Pokemon _pokemon;
     private static directed_weighted_graph _graph;
     private static DWGraphs_Algo _graphAlgo;
     private static game_service _game;
@@ -33,7 +32,6 @@ public class Agent implements Runnable {
             dt = _mover.init(_agent);
             try {
                 Thread.sleep(dt);
-
             }
             catch(Exception e) {
                 e.printStackTrace();

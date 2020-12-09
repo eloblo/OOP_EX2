@@ -5,7 +5,6 @@ import api.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,6 @@ public class Ex2 implements Runnable{
     private static Arena _ar;
     private static int _id = -1;
     private static int _scenario = 0;
-    private static Mover _mover;
     private static ArrayList<Thread> _agents = new ArrayList<>();
     private static directed_weighted_graph _graph;
 
@@ -82,7 +80,6 @@ public class Ex2 implements Runnable{
         List<CL_Pokemon> ffs = Arena.json2Pokemons(fs);
         _ar.setPokemons(ffs);
         Mover mover = new Mover(_ar,_graph,game,log.size());
-        _mover = mover;
         for(int i=0;i<log.size();i++) {
             CL_Agent ag = log.get(i);
             Agent agent = new Agent(_ar,ag,_graph,game,mover);
