@@ -1,9 +1,6 @@
 package gameClient;
 
-import api.directed_weighted_graph;
-import api.edge_data;
-import api.geo_location;
-import api.node_data;
+import api.*;
 import gameClient.util.Point3D;
 import gameClient.util.Range;
 import gameClient.util.Range2D;
@@ -24,10 +21,13 @@ public class Frame extends JFrame{
     private int _ind;
     private Arena _ar;
     private gameClient.util.Range2Range _w2f;
-    private static Image graphImg;
+    private game_service _game;
+    private Image graphImg;
+    private JLabel _timer;
 
-    Frame(String a) {
+    Frame(String a, game_service game) {
         super(a);
+        _game = game;
         int _ind = 0;
     }
     public void update(Arena ar) {
@@ -49,6 +49,7 @@ public class Frame extends JFrame{
         Graphics graphics = graphImg.getGraphics();
         paintComponents(graphics);
         g.drawImage(graphImg,0,0,this);
+        drawTimer(g);
         updateFrame();
     }
 
@@ -58,6 +59,7 @@ public class Frame extends JFrame{
         drawGraph(g);
         drawAgents(g);
         drawInfo(g);
+        drawTimer(g);
     }
 
     private void drawInfo(Graphics g) {
@@ -66,8 +68,16 @@ public class Frame extends JFrame{
         for(int i=0;i<str.size();i++) {
             g.drawString(str.get(i)+" dt: "+dt,100,60+i*20);
         }
-
     }
+
+    private void drawTimer(Graphics g){
+        g.setFont(new Font("Arial",Font.BOLD,36));
+        int sec = (int) (_game.timeToEnd()/1000);
+        int min = (int) (_game.timeToEnd()/60000);
+        String time = min+":"+sec;
+        g.drawString(time,20,70);
+    }
+
     private void drawGraph(Graphics g) {
         directed_weighted_graph gg = _ar.getGraph();
         Iterator<node_data> iter = gg.getV().iterator();

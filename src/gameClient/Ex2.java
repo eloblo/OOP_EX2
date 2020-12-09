@@ -5,6 +5,7 @@ import api.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,19 +20,25 @@ public class Ex2 implements Runnable{
     private static directed_weighted_graph _graph;
 
     public static void main(String[] a) {
-        LoginPanel log = new LoginPanel();
-        log.loginPanel();
         Thread client = new Thread(new Ex2());
-        while(log.isOpen()){
-            try {
-                client.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        if(a.length == 0){
+            LoginPanel log = new LoginPanel();
+            log.loginPanel();
+            while(log.isOpen()){
+                try {
+                    client.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+            _id = log.getID();
+            _scenario = log.getScenario();
+            log.dispose();
         }
-        _id = log.getID();
-        _scenario = log.getScenario();
-        log.dispose();
+        else{
+            _id = Integer.parseInt(a[0]);
+            _scenario = Integer.parseInt(a[1]);
+        }
         client.start();
     }
 
@@ -47,12 +54,11 @@ public class Ex2 implements Runnable{
         game.startGame();
         _win.setTitle("Ex2 - OOP: (NONE trivial Solution) "+game.toString());
         int ind=0;
-        long dt=1000/60;
+        long dt=1000/60;  //60FPS
         moveAgents(game);
         for(Thread thread : _agents){
             thread.start();
         }
-        System.out.println(game.getGraph());
         while(game.isRunning()) {
             try {
                 if(ind%1==0) {_win.repaint();}
@@ -64,7 +70,6 @@ public class Ex2 implements Runnable{
             }
         }
         String res = game.toString();
-
         System.out.println(res);
         System.exit(0);
     }
@@ -94,7 +99,7 @@ public class Ex2 implements Runnable{
         _ar = new Arena();
         _ar.setGraph(_graph);
         _ar.setPokemons(Arena.json2Pokemons(fs));
-        _win = new Frame("test Ex2");
+        _win = new Frame("Ex2", game);
         _win.setSize(1000, 700);
         _win.update(_ar);
 

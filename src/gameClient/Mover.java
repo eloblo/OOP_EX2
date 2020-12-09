@@ -46,14 +46,22 @@ public class Mover {
             resetLists();
         }
         double slpTime = 100;
-        if(_pokemon != null){
+        try{
             slpTime = getTime(nextNode);
+        }
+        catch (NullPointerException ne){
+            try{
+                wait();
+                slpTime = 0;
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
         }
         return (int) slpTime;
     }
 
     private long getTime(int nextNode){
-
         double slpTime;
         double speed = _agent.getSpeed();
         edge_data pokEdge = _pokemon.get_edge();
@@ -61,23 +69,24 @@ public class Mover {
         edge_data currEdge = _graph.getEdge(currNode,nextNode);
         geo_location srcNodePos = _graph.getNode(currNode).getLocation();
         geo_location destNodePos = _graph.getNode(nextNode).getLocation();
+        double edgeDist = srcNodePos.distance(destNodePos)*1000;
         double weight = currEdge.getWeight();
         if((pokEdge.getDest() == currEdge.getDest()) && (pokEdge.getSrc() == currEdge.getSrc())){
-            double dist2Pok = _agent.getLocation().distance(_pokemon.getLocation());
-            double edgeDist = srcNodePos.distance(destNodePos);
+            double dist2Pok = _agent.getLocation().distance(_pokemon.getLocation())*1000;
             double ratio = dist2Pok/edgeDist;
             weight *= ratio;
         }
         else{
-            double dist2Dest = _agent.getLocation().distance(destNodePos);
-            double edgeDist = srcNodePos.distance(destNodePos);
+            double dist2Dest = _agent.getLocation().distance(destNodePos)*1000;
             double ratio = (dist2Dest/edgeDist);
             weight *= ratio;
         }
         weight *= 1000;
         slpTime = weight/speed;
-        System.out.println("w:"+weight+", s:"+speed+", t:"+slpTime);
         slpTime++;
+    //    System.out.println(_agent.getLocation());
+    //    System.out.println(_pokemon.getLocation());
+    //    System.out.println(pokEdge.getSrc()+","+ pokEdge.getDest());
         return (long) slpTime;
     }
 
@@ -88,6 +97,7 @@ public class Mover {
         String fs = _game.getPokemons();
         List<CL_Pokemon> ffs = Arena.json2Pokemons(fs);
         _ar.setPokemons(ffs);
+        notify();
         _agent = log.get(_agent.getID());
         int id = _agent.getID();
         int src = _agent.getSrcNode();
@@ -100,7 +110,7 @@ public class Mover {
 
     private int nextNode(int src) {
         int ans = -1;
-        if (_path == null || _path.isEmpty()) {
+       if (_path == null || _path.isEmpty()) {
             List<CL_Pokemon> pokes = _ar.getPokemons();
             int finalDest = findPkm(pokes, src);
             _path = _graphAlgo.shortestPath(src, finalDest);
