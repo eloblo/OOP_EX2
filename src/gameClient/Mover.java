@@ -45,7 +45,7 @@ public class Mover {
         }
         catch (NullPointerException ne){
             try{
-                wait();
+                resetLists();
                 slpTime = 0;
             }
             catch (Exception e){
