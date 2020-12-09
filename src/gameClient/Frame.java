@@ -24,6 +24,8 @@ public class Frame extends JFrame{
     private int _ind;
     private Arena _ar;
     private gameClient.util.Range2Range _w2f;
+    private static Image graphImg;
+
     Frame(String a) {
         super(a);
         int _ind = 0;
@@ -43,14 +45,21 @@ public class Frame extends JFrame{
     public void paint(Graphics g) {
         int w = this.getWidth();
         int h = this.getHeight();
-        g.clearRect(0, 0, w, h);
+        graphImg = this.createImage(w,h);
+        Graphics graphics = graphImg.getGraphics();
+        paintComponents(graphics);
+        g.drawImage(graphImg,0,0,this);
         updateFrame();
+    }
+
+    @Override
+    public void paintComponents(Graphics g){
         drawPokemons(g);
         drawGraph(g);
         drawAgents(g);
         drawInfo(g);
-
     }
+
     private void drawInfo(Graphics g) {
         List<String> str = _ar.get_info();
         String dt = "none";

@@ -9,9 +9,7 @@ public class Agent implements Runnable {
 
     private static Arena _ar;
     private CL_Agent _agent;
-    private List<node_data> _path;
-    private List<CL_Pokemon> _pokemons;
-    private CL_Pokemon _pokemon;
+ //   private CL_Pokemon _pokemon;
     private static directed_weighted_graph _graph;
     private static DWGraphs_Algo _graphAlgo;
     private static game_service _game;
@@ -30,11 +28,12 @@ public class Agent implements Runnable {
 
     @Override
     public void run() {
-        int dt = 10;
+        long dt = 0;
         while(_game.isRunning()){
-            _path = _mover.init(_agent, _pokemon, _path);
+            dt = _mover.init(_agent);
             try {
                 Thread.sleep(dt);
+
             }
             catch(Exception e) {
                 e.printStackTrace();
