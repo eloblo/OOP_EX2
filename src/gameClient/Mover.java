@@ -10,11 +10,9 @@ public class Mover {
 
     private static Arena _ar;
     private CL_Agent _agent;
-    private List<node_data> _path;
     private CL_Pokemon _pokemon;
     private static HashSet<String> _blackList;
     private static HashMap<Integer,HashSet<String>> _whiteList;
-    private static HashMap<Integer,List<node_data>> _pathSet;
     private static directed_weighted_graph _graph;
     private static DWGraphs_Algo _graphAlgo;
     private static game_service _game;
@@ -27,19 +25,16 @@ public class Mover {
         _game = game;
         _blackList = new HashSet<>();
         _whiteList = new HashMap<>();
-        _pathSet = new HashMap<>();
         _graphAlgo = new DWGraphs_Algo(new DWGraph_DS());
         DWGraph_DS temp = _graphAlgo.caster(_graph);
         _graphAlgo.init(temp);
         for(int i = 0; i < numOfAgents; i++){
             _whiteList.put(i,new HashSet<String>());
-            _pathSet.put(i,null);
         }
     }
 
     public synchronized int init(CL_Agent agent){
         _agent = agent;
-        _path = _pathSet.get(_agent.getID());
         int nextNode = moveAgents();
         if(_reset == 100* _whiteList.size()){
             resetLists();
@@ -106,23 +101,16 @@ public class Mover {
 
     private int nextNode(int src) {
         int ans = -1;
-       if (_path == null || _path.isEmpty()) {
             List<CL_Pokemon> pokes = _ar.getPokemons();
             int finalDest = findPkm(pokes, src);
-            _path = _graphAlgo.shortestPath(src, finalDest);
+            List<node_data> path = _graphAlgo.shortestPath(src, finalDest);
             for(int i = 0; i < _whiteList.size()-1; i++){
                 reserveNextPok(pokes, finalDest);
             }
-            if(_path != null){
-                _path.remove(0);
-                ans = _path.get(0).getKey();
-                _path.remove(0);
+            if(path != null){
+                path.remove(0);
+                ans = path.get(0).getKey();
             }
-        }
-        else{
-            ans = _path.get(0).getKey();
-            _path.remove(0);
-        }
         return ans;
     }
 

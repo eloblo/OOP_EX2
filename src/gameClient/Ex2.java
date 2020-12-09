@@ -82,7 +82,7 @@ public class Ex2 implements Runnable{
         Mover mover = new Mover(_ar,_graph,game,log.size());
         for(int i=0;i<log.size();i++) {
             CL_Agent ag = log.get(i);
-            Agent agent = new Agent(_ar,ag,_graph,game,mover);
+            Agent agent = new Agent(ag,game,mover);
             Thread thread = new Thread(agent);
             _agents.add(thread);
         }
