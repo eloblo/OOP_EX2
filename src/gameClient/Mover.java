@@ -40,32 +40,32 @@ public class Mover {
 
     public synchronized int init(CL_Agent agent){
         _agent = agent;
+        _edge = prevEdges.get(_agent.getID());
+        prev = prevPokm.get(_agent.getID());
         int nextNode = moveAgents();
         if(_reset == 100* _whiteList.size()){
             resetLists();
         }
         double slpTime = 100;
-  //      try{
+        try{
             slpTime = getTime(nextNode);
- //       }
-  //     catch (NullPointerException ne){
-      //      try{
-        //        resetLists();
-       //         slpTime = 0;
-        //        if(nextNode(_agent.getSrcNode()) == -1){
-       //             wait();
-      //          }
-      //      }
-        //    catch (Exception e){
-       //         e.printStackTrace();
-      //      }
-  //      }
+        }
+       catch (NullPointerException ne){
+            try{
+                resetLists();
+                slpTime = 0;
+                if(nextNode(_agent.getSrcNode()) == -1){
+                    wait();
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
         return (int) slpTime;
     }
 
     private long getTime(int nextNode){
-     //   _edge = prevEdges.get(_agent.getID());
-   //     prev = prevPokm.get(_agent.getID());
         double slpTime;
         double speed = _agent.getSpeed();
         edge_data pokEdge = _pokemon.get_edge();
@@ -79,12 +79,10 @@ public class Mover {
             double dist2Pok = _agent.getLocation().distance(_pokemon.getLocation());
             double ratio = dist2Pok/edgeDist;
             weight *= ratio;
-            _edge = currEdge;
-            prev = _pokemon;
-         //   prevEdges.put(_agent.getID(), currEdge);
-        //    prevPokm.put(_agent.getID(), _pokemon);
+            prevEdges.put(_agent.getID(), currEdge);
+            prevPokm.put(_agent.getID(), _pokemon);
         }
-        else if((_edge.getDest() == prev.get_edge().getDest()) && (_edge.getSrc() == prev.get_edge().getSrc())){
+        else if(_edge != null && ((_edge.getDest() == prev.get_edge().getDest()) && (_edge.getSrc() == prev.get_edge().getSrc()))){
             notifyAll();
             weight =_edge.getWeight();
             currNode = _graph.getNode(_edge.getSrc()).getKey();
@@ -95,16 +93,8 @@ public class Mover {
             double dist2Dest = destNodePos.distance(_agent.getLocation());
             double ratio = (dist2Dest/edgeDist);
             weight *= ratio;
-            _edge = _pokemon.get_edge();
+            prevEdges.put(_agent.getID(),_pokemon.get_edge());
         }
-   //     else{
-    //        double dist2Dest = destNodePos.distance(_agent.getLocation());
-     //       double ratio = (dist2Dest/edgeDist);
-    //        if(ratio < 1){
-      //          notifyAll();
-         //   }
-       //     weight *= ratio;
-     //   }
         weight *= 1000;
         slpTime = weight/speed;
         slpTime++;
