@@ -8,28 +8,42 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-
+/** a class of algorithms for the DWGraph_DS class.
+ *  contains methods to check connectivity, distance & path,
+ *  cast to DWGraph_DS, copy, save and load graphs from Json files.
+ */
 public class DWGraphs_Algo implements dw_graph_algorithms {
 
-    private DWGraph_DS _graph;
+    private DWGraph_DS _graph;                   //the graph that we are working on
     NodeComparator _comp = new NodeComparator(); //a custom comparator for to compare between node in the algorithms
 
+    /** empty constructor.
+     *  methods will not work until inner graph is
+     *  initialized, except init() and cast().
+     */
     public DWGraphs_Algo(){}
 
+    /** basic constructor, sets the graph as inner graph */
     public DWGraphs_Algo(directed_weighted_graph g){
         _graph = (DWGraph_DS) g;
     }
 
+    /** set g as the new graph */
     @Override
     public void init(directed_weighted_graph g) {
         _graph = (DWGraph_DS) g;
     }
 
+    /** return the current graph */
     @Override
     public directed_weighted_graph getGraph() {
         return _graph;
     }
 
+    /** returns a copy of the graph as an object object,
+     * instead of a shallow pointer.
+     * @return copy of the graph as an object of directed_weighted_graph.
+     */
     @Override
     public directed_weighted_graph copy() {
         DWGraph_DS newGr = new DWGraph_DS();
@@ -37,7 +51,7 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
         for(node_data node : nodes){                                       //for every node in the graph, create a new node for newGr
             newGr.addNode(new NodeData(node.getKey()));
         }
-        for(node_data node: nodes){                                        //for every node in the graph, copy its neighbors
+        for(node_data node: nodes){                                        //for every node in the graph, copy its edges
             Collection<edge_data> edges = _graph.getE(node.getKey());
             for(edge_data e : edges){                                      //for every neighbors a node has, copy its edges
                 newGr.connect(e.getSrc(), e.getDest(), e.getWeight());
@@ -46,32 +60,41 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
         return newGr;
     }
 
-    public DWGraph_DS caster(directed_weighted_graph temp){
+    /** cast a directed_weighted_graph object to DWGraph_DS
+     *  by making a copy of him of the DWGraph type.
+     * @param oldG the graph to be copied
+     * @return DWGraph object with equals elements as g
+     */
+    public DWGraph_DS caster(directed_weighted_graph oldG){
         DWGraph_DS newGr = new DWGraph_DS();
-        Collection<node_data> nodes = temp.getV();
-        for(node_data node : nodes){
+        Collection<node_data> nodes = oldG.getV();                      //get a list of all the nodes in the main graph
+        for(node_data node : nodes){                                    //for every node in the graph, create a new node for newGr
             newGr.addNode(new NodeData(node.getKey()));
         }
-        for(node_data node: nodes){
-            Collection<edge_data> edges = temp.getE(node.getKey());
-            for(edge_data e : edges){
+        for(node_data node: nodes){                                     //for every node in the graph, copy its edges
+            Collection<edge_data> edges = oldG.getE(node.getKey());
+            for(edge_data e : edges){                                   //for every neighbors a node has, copy its edges
                 newGr.connect(e.getSrc(), e.getDest(), e.getWeight());
             }
         }
         return newGr;
     }
 
+    /** checks if every node is connected to every other node.
+     * utilizes kosoraju algorithm.
+     * @return if the graph is strongly connected
+     */
     @Override
     public boolean isConnected() {
-        clearTag();
-        LinkedList<node_data> q = new LinkedList<>();
+        clearTag();                                              //reset tags
+        LinkedList<node_data> q = new LinkedList<>();            //queue for the nodes
         List<node_data> nodes = (List<node_data>) _graph.getV();
-        if(nodes.size() == 0 || nodes.size() == 1){
+        if(nodes.size() == 0 || nodes.size() == 1){              //an empty graph or a node are connected
             return true;
         }
-        node_data src = nodes.get(0);
+        node_data src = nodes.get(0);   //random starting node
         q.add(src);
-        while(!q.isEmpty()){
+        while(!q.isEmpty()){            //run until checked every node
             src = q.remove();
             Collection<edge_data> edges = _graph.getE(src.getKey());
             for(edge_data e : edges){
@@ -275,6 +298,7 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
         return newGr;
     }
 
+    //resets all the nodes' tag. mainly for algorithmic use
     private void clearTag(){
         Collection<node_data> nodes = _graph.getV();
         for(node_data node : nodes){
@@ -282,6 +306,7 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
         }
     }
 
+    //resets all the nodes' weight. mainly for algorithmic use
     private void clearWeight(){
         Collection<node_data> nodes = _graph.getV();
         for(node_data node : nodes){
