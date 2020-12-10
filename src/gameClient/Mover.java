@@ -18,7 +18,6 @@ public class Mover {
     private static game_service _game;
     private int _reset = 0;
 
-
     public Mover(Arena ar, directed_weighted_graph graph, game_service game, int numOfAgents){
         _ar = ar;
         _graph = graph;
@@ -47,6 +46,9 @@ public class Mover {
             try{
                 resetLists();
                 slpTime = 0;
+                if(nextNode(_agent.getSrcNode()) == -1){
+                    wait();
+                }
             }
             catch (Exception e){
                 e.printStackTrace();
@@ -63,16 +65,19 @@ public class Mover {
         edge_data currEdge = _graph.getEdge(currNode,nextNode);
         geo_location srcNodePos = _graph.getNode(currNode).getLocation();
         geo_location destNodePos = _graph.getNode(nextNode).getLocation();
-        double edgeDist = srcNodePos.distance(destNodePos)*1000;
+        double edgeDist = srcNodePos.distance(destNodePos);
         double weight = currEdge.getWeight();
         if((pokEdge.getDest() == currEdge.getDest()) && (pokEdge.getSrc() == currEdge.getSrc())){
-            double dist2Pok = _agent.getLocation().distance(_pokemon.getLocation())*1000;
+            double dist2Pok = _agent.getLocation().distance(_pokemon.getLocation());
             double ratio = dist2Pok/edgeDist;
             weight *= ratio;
         }
         else{
-            double dist2Dest = _agent.getLocation().distance(destNodePos)*1000;
+            double dist2Dest = _agent.getLocation().distance(destNodePos);
             double ratio = (dist2Dest/edgeDist);
+            if(ratio < 1){
+                notifyAll();
+            }
             weight *= ratio;
         }
         weight *= 1000;
@@ -121,7 +126,6 @@ public class Mover {
             String pos = pok.getLocation().toString();
             if(!_blackList.contains(pos) || _whiteList.get(_agent.getID()).contains(pos)){
                 edge_data edge = pok.get_edge();
-                int edgeSrc = edge.getSrc();
                 int edgeDest = edge.getDest();
                 double value = edge.getWeight();
                 if (edgeDest == src) {
@@ -150,7 +154,6 @@ public class Mover {
             String pos = pok.getLocation().toString();
             if(!_blackList.contains(pos) || _whiteList.get(_agent.getID()).contains(pos)){
                 edge_data edge = pok.get_edge();
-                int edgeSrc = edge.getSrc();
                 int edgeDest = edge.getDest();
                 double value = edge.getWeight();
                 double dist = _graphAlgo.shortestPathDist(src,edgeDest)/value;
