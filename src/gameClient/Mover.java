@@ -139,7 +139,7 @@ public class Mover {
                 }
             }
         }
-        if(pokemon != null){
+        if(_pokemon != null){
             _blackList.add(_pokemon.getLocation().toString());
             _whiteList.get(_agent.getID()).add(_pokemon.getLocation().toString());
             _reset++;
