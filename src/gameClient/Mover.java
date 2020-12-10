@@ -17,6 +17,10 @@ public class Mover {
     private static DWGraphs_Algo _graphAlgo;
     private static game_service _game;
     private int _reset = 0;
+    edge_data _edge;
+    CL_Pokemon prev;
+    HashMap<Integer,edge_data> prevEdges;
+    HashMap<Integer,CL_Pokemon> prevPokm;
 
     public Mover(Arena ar, directed_weighted_graph graph, game_service game, int numOfAgents){
         _ar = ar;
@@ -25,6 +29,8 @@ public class Mover {
         _blackList = new HashSet<>();
         _whiteList = new HashMap<>();
         _graphAlgo = new DWGraphs_Algo(new DWGraph_DS());
+        prevEdges = new HashMap<>();
+        prevPokm = new HashMap<>();
         DWGraph_DS temp = _graphAlgo.caster(_graph);
         _graphAlgo.init(temp);
         for(int i = 0; i < numOfAgents; i++){
@@ -39,25 +45,27 @@ public class Mover {
             resetLists();
         }
         double slpTime = 100;
-        try{
+  //      try{
             slpTime = getTime(nextNode);
-        }
-        catch (NullPointerException ne){
-            try{
-                resetLists();
-                slpTime = 0;
-                if(nextNode(_agent.getSrcNode()) == -1){
-                    wait();
-                }
-            }
-            catch (Exception e){
-                e.printStackTrace();
-            }
-        }
+ //       }
+  //     catch (NullPointerException ne){
+      //      try{
+        //        resetLists();
+       //         slpTime = 0;
+        //        if(nextNode(_agent.getSrcNode()) == -1){
+       //             wait();
+      //          }
+      //      }
+        //    catch (Exception e){
+       //         e.printStackTrace();
+      //      }
+  //      }
         return (int) slpTime;
     }
 
     private long getTime(int nextNode){
+     //   _edge = prevEdges.get(_agent.getID());
+   //     prev = prevPokm.get(_agent.getID());
         double slpTime;
         double speed = _agent.getSpeed();
         edge_data pokEdge = _pokemon.get_edge();
@@ -71,15 +79,32 @@ public class Mover {
             double dist2Pok = _agent.getLocation().distance(_pokemon.getLocation());
             double ratio = dist2Pok/edgeDist;
             weight *= ratio;
+            _edge = currEdge;
+            prev = _pokemon;
+         //   prevEdges.put(_agent.getID(), currEdge);
+        //    prevPokm.put(_agent.getID(), _pokemon);
         }
-        else{
-            double dist2Dest = _agent.getLocation().distance(destNodePos);
+        else if((_edge.getDest() == prev.get_edge().getDest()) && (_edge.getSrc() == prev.get_edge().getSrc())){
+            notifyAll();
+            weight =_edge.getWeight();
+            currNode = _graph.getNode(_edge.getSrc()).getKey();
+            nextNode = _graph.getNode(_edge.getDest()).getKey();
+            srcNodePos = _graph.getNode(currNode).getLocation();
+            destNodePos = _graph.getNode(nextNode).getLocation();
+            edgeDist = srcNodePos.distance(destNodePos);
+            double dist2Dest = destNodePos.distance(_agent.getLocation());
             double ratio = (dist2Dest/edgeDist);
-            if(ratio < 1){
-                notifyAll();
-            }
             weight *= ratio;
+            _edge = _pokemon.get_edge();
         }
+   //     else{
+    //        double dist2Dest = destNodePos.distance(_agent.getLocation());
+     //       double ratio = (dist2Dest/edgeDist);
+    //        if(ratio < 1){
+      //          notifyAll();
+         //   }
+       //     weight *= ratio;
+     //   }
         weight *= 1000;
         slpTime = weight/speed;
         slpTime++;
@@ -121,7 +146,6 @@ public class Mover {
     private int findPkm(List<CL_Pokemon> pokes, int src) {
         int ans = -1;
         double minDist = Integer.MAX_VALUE;
-        CL_Pokemon pokemon = null;
         for (CL_Pokemon pok : pokes) {
             String pos = pok.getLocation().toString();
             if(!_blackList.contains(pos) || _whiteList.get(_agent.getID()).contains(pos)){
