@@ -88,7 +88,6 @@ public class Mover {
         String fs = _game.getPokemons();
         List<CL_Pokemon> ffs = Arena.json2Pokemons(fs);
         _ar.setPokemons(ffs);
-        notify();
         _agent = log.get(_agent.getID());
         int id = _agent.getID();
         int src = _agent.getSrcNode();
@@ -122,12 +121,14 @@ public class Mover {
             String pos = pok.getLocation().toString();
             if(!_blackList.contains(pos) || _whiteList.get(_agent.getID()).contains(pos)){
                 edge_data edge = pok.get_edge();
+                int edgeSrc = edge.getSrc();
                 int edgeDest = edge.getDest();
+                double value = edge.getWeight();
                 if (edgeDest == src) {
                     return edge.getSrc();
                 }
-                double dist = _graphAlgo.shortestPathDist(src,edgeDest);
-                if (dist < minDist && dist != -1) {
+                double dist = _graphAlgo.shortestPathDist(src,edgeDest)/value;
+                if (dist < minDist && dist > 0) {
                     minDist = dist;
                     ans = edge.getDest();;
                     _pokemon = pok;
@@ -149,9 +150,11 @@ public class Mover {
             String pos = pok.getLocation().toString();
             if(!_blackList.contains(pos) || _whiteList.get(_agent.getID()).contains(pos)){
                 edge_data edge = pok.get_edge();
+                int edgeSrc = edge.getSrc();
                 int edgeDest = edge.getDest();
-                double dist = _graphAlgo.shortestPathDist(src,edgeDest);
-                if (dist < minDist && dist != -1) {
+                double value = edge.getWeight();
+                double dist = _graphAlgo.shortestPathDist(src,edgeDest)/value;
+                if (dist < minDist && dist >= 0) {
                     minDist = dist;
                     pokemon = pok;
                 }
