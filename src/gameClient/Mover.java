@@ -6,6 +6,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+/** a class to manage the movement of agents, in order
+ * to keep agent movements to minimum while keeping the
+ * score as high as possible. the class contains "libraries"
+ * in form of Hash data structures for every agent data.
+ */
 public class Mover {
 
     private static Arena _ar;
@@ -66,15 +71,14 @@ public class Mover {
     }
 
     private long getTime(int nextNode){
-        double slpTime;
-        double speed = _agent.getSpeed();
-        edge_data pokEdge = _pokemon.get_edge();
         int currNode = _agent.getSrcNode();
+        edge_data pokEdge = _pokemon.get_edge();
         edge_data currEdge = _graph.getEdge(currNode,nextNode);
         geo_location srcNodePos = _graph.getNode(currNode).getLocation();
         geo_location destNodePos = _graph.getNode(nextNode).getLocation();
         double edgeDist = srcNodePos.distance(destNodePos);
         double weight = currEdge.getWeight();
+        double speed = _agent.getSpeed();
         if((pokEdge.getDest() == currEdge.getDest()) && (pokEdge.getSrc() == currEdge.getSrc())){
             double dist2Pok = _agent.getLocation().distance(_pokemon.getLocation());
             double ratio = dist2Pok/edgeDist;
@@ -82,21 +86,21 @@ public class Mover {
             _prevEdges.put(_agent.getID(), currEdge);
             _prevPkList.put(_agent.getID(), _pokemon);
         }
-        else if(_prevEdge != null && ((_prevEdge.getDest() == _prevPok.get_edge().getDest()) && (_prevEdge.getSrc() == _prevPok.get_edge().getSrc()))){
+        else if(_prevEdge != null && _prevEdge.getDest() == _prevPok.get_edge().getDest() && _prevEdge.getSrc() == _prevPok.get_edge().getSrc()){
             notifyAll();
-            weight =_prevEdge.getWeight();
+            weight = _prevEdge.getWeight();
             currNode = _graph.getNode(_prevEdge.getSrc()).getKey();
             nextNode = _graph.getNode(_prevEdge.getDest()).getKey();
             srcNodePos = _graph.getNode(currNode).getLocation();
             destNodePos = _graph.getNode(nextNode).getLocation();
             edgeDist = srcNodePos.distance(destNodePos);
             double dist2Dest = destNodePos.distance(_agent.getLocation());
-            double ratio = (dist2Dest/edgeDist);
+            double ratio = dist2Dest/edgeDist;
             weight *= ratio;
             _prevEdges.put(_agent.getID(),_pokemon.get_edge());
         }
         weight *= 1000;
-        slpTime = weight/speed;
+        double slpTime = weight/speed;
         slpTime++;
         return (long) slpTime;
     }

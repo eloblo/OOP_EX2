@@ -2,7 +2,6 @@ package api;
 
 import com.google.gson.*;
 
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,14 +32,14 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
 
     @Override
     public directed_weighted_graph copy() {
-        DWGraph_DS newGr = new DWGraph_DS();                                             //initialize the new graph
+        DWGraph_DS newGr = new DWGraph_DS();
         Collection<node_data> nodes = _graph.getV();                       //get a list of all the nodes in the main graph
-        for(node_data node : nodes){                                                   //for every node in the graph, create a new node for newGr
-            newGr.addNode(new NodeData(node.getKey()));                                              //create a copy of the nodes
+        for(node_data node : nodes){                                       //for every node in the graph, create a new node for newGr
+            newGr.addNode(new NodeData(node.getKey()));
         }
-        for(node_data node: nodes){                                                    //for every node in the graph, copy its neighbors
-            Collection<edge_data> edges = _graph.getE(node.getKey());  //get the neighbors of every node in the graph
-            for(edge_data e : edges){                                                   //for every neighbors a node has, copy its edges
+        for(node_data node: nodes){                                        //for every node in the graph, copy its neighbors
+            Collection<edge_data> edges = _graph.getE(node.getKey());
+            for(edge_data e : edges){                                      //for every neighbors a node has, copy its edges
                 newGr.connect(e.getSrc(), e.getDest(), e.getWeight());
             }
         }
@@ -48,14 +47,14 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
     }
 
     public DWGraph_DS caster(directed_weighted_graph temp){
-        DWGraph_DS newGr = new DWGraph_DS();                                             //initialize the new graph
-        Collection<node_data> nodes = temp.getV();                       //get a list of all the nodes in the main graph
-        for(node_data node : nodes){                                                   //for every node in the graph, create a new node for newGr
-            newGr.addNode(new NodeData(node.getKey()));                                              //create a copy of the nodes
+        DWGraph_DS newGr = new DWGraph_DS();
+        Collection<node_data> nodes = temp.getV();
+        for(node_data node : nodes){
+            newGr.addNode(new NodeData(node.getKey()));
         }
-        for(node_data node: nodes){                                                    //for every node in the graph, copy its neighbors
-            Collection<edge_data> edges = temp.getE(node.getKey());  //get the neighbors of every node in the graph
-            for(edge_data e : edges){                                                   //for every neighbors a node has, copy its edges
+        for(node_data node: nodes){
+            Collection<edge_data> edges = temp.getE(node.getKey());
+            for(edge_data e : edges){
                 newGr.connect(e.getSrc(), e.getDest(), e.getWeight());
             }
         }
@@ -64,48 +63,48 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
 
     @Override
     public boolean isConnected() {
-        clearTag();                                                           //clear the tags from previous algorithms
-        LinkedList<node_data> q = new LinkedList<>();                        //create a queue to hold the nodes that are checked
+        clearTag();
+        LinkedList<node_data> q = new LinkedList<>();
         List<node_data> nodes = (List<node_data>) _graph.getV();
-        if(nodes.size() == 0 || nodes.size() == 1){                           //if the graph is empty or is just a node
-            return true;                                                      //the graph is connected
+        if(nodes.size() == 0 || nodes.size() == 1){
+            return true;
         }
-        node_data src = nodes.get(0);                                         //the starting node for the algorithm
+        node_data src = nodes.get(0);
         q.add(src);
-        while(!q.isEmpty()){                                                  //if the queue is empty then we checked every connected node
-            src = q.remove();                                                 //remove the node we checked
-            Collection<edge_data> edges = _graph.getE(src.getKey());            //get the src neighbors
-            for(edge_data e : edges){                                          //for every node in src's neighbors,
+        while(!q.isEmpty()){
+            src = q.remove();
+            Collection<edge_data> edges = _graph.getE(src.getKey());
+            for(edge_data e : edges){
                 node_data node = _graph.getNode(e.getDest());
-                if(node.getTag() == 0){                                         //check if the node was visited (default 0 = false)
-                    q.add(node);                                                //if not add it to the queue of unvisited nodes
+                if(node.getTag() == 0){
+                    q.add(node);
                 }
-                node.setTag(1);                                                 //after the node was checked set the tag accordingly
+                node.setTag(1);
             }
         }
-        for(node_data node1 : nodes){                                         //check every node int the graph
-            if(node1.getTag() == 0){                                          //if there is a node that wasn't visited
-                return false;                                                 //then the algorithm couldn't reach the node because he wasn't connected
+        for(node_data node1 : nodes){
+            if(node1.getTag() == 0){
+                return false;
             }
         }
-        clearTag();                                                           //clear the tags from previous algorithms
-        q = new LinkedList<node_data>();                        //create a queue to hold the nodes that are checked
-        src = nodes.get(0);                                         //the starting node for the algorithm
+        clearTag();
+        q = new LinkedList<node_data>();
+        src = nodes.get(0);
         q.add(src);
-        while(!q.isEmpty()){                                                  //if the queue is empty then we checked every connected node
-            src = q.remove();                                                 //remove the node we checked
-            Collection<edge_data> edges = _graph.getBE(src.getKey());            //get the src neighbors
-            for(edge_data e : edges){                                          //for every node in src's neighbors,
+        while(!q.isEmpty()){
+            src = q.remove();
+            Collection<edge_data> edges = _graph.getBE(src.getKey());
+            for(edge_data e : edges){
                 node_data node = _graph.getNode(e.getSrc());
-                if(node.getTag() == 0){                                         //check if the node was visited (default 0 = false)
-                    q.add(node);                                                //if not add it to the queue of unvisited nodes
+                if(node.getTag() == 0){
+                    q.add(node);
                 }
-                node.setTag(1);                                                 //after the node was checked set the tag accordingly
+                node.setTag(1);
             }
         }
-        for(node_data node1 : nodes){                                         //check every node int the graph
-            if(node1.getTag() == 0){                                          //if there is a node that wasn't visited
-                return false;                                                 //then the algorithm couldn't reach the node because he wasn't connected
+        for(node_data node1 : nodes){
+            if(node1.getTag() == 0){
+                return false;
             }
         }
         return true;
@@ -113,33 +112,33 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
 
     @Override
     public double shortestPathDist(int src, int dest) {
-        if(src == dest){                                                                     //if the src is also the dest the distance is 0
+        if(src == dest){
             return 0;
         }
-        this.clearWeight();                                                                     //clear the tags from previous algorithms
+        this.clearWeight();
         node_data node, nDest;
         node = _graph.getNode(src);
         nDest = _graph.getNode(dest);
-        if(node != null && nDest != null){                                                   //check that the nodes exist in the graph
-            node.setInfo("");                                                                //empty the src node info, mainly to record the path of nodes
-            PriorityQueue<node_data> que = new PriorityQueue<>(_graph.nodeSize(), _comp);    //priority queue for the algorithm with class' comp
+        if(node != null && nDest != null){
+            node.setInfo("");
+            PriorityQueue<node_data> que = new PriorityQueue<>(_graph.nodeSize(), _comp);
             que.add(node);
-            while(!que.isEmpty()){                                                           //check every node until queue is empty
-                node = que.remove();                                                         //remove the node that is being checked
-                if(node.getKey() == dest){                                                   //if reached the dest node
-                    return node.getWeight();                                                    //return the distance calculated and stored in the tag
+            while(!que.isEmpty()){
+                node = que.remove();
+                if(node.getKey() == dest){
+                    return node.getWeight();
                 }
                 Collection<edge_data> edges = _graph.getE(node.getKey());
-                for(edge_data e : edges){                                                     //for every neighbor of the checked node
+                for(edge_data e : edges){
                     node_data temp = _graph.getNode(e.getDest());
-                    double dist = node.getWeight() + e.getWeight();                                    //set the distance as the current edge weight and node tag
-                    if((dist < temp.getWeight() || temp.getWeight() == 0 )&& temp.getKey() != src){      //if encounter an unvisited node or a shorter path that isn't the src node
-                        if(dist < temp.getWeight()){                                              //check if encountered a visited node with shorter path
-                            que.remove(temp);                                                  //remove the visited node from the queue
-                        }                                                                    //so he can be replaced with a the same node with a shorter path
-                        temp.setInfo(node.getInfo() + temp.getKey() + ",");                      //record the node in the path, inside the next node
-                        temp.setWeight(dist);                                                     //store distance that was passed in the tag
-                        que.add(temp);                                                         //add the neighboring node to the the queue
+                    double dist = node.getWeight() + e.getWeight();
+                    if((dist < temp.getWeight() || temp.getWeight() == 0 )&& temp.getKey() != src){
+                        if(dist < temp.getWeight()){
+                            que.remove(temp);
+                        }
+                        temp.setInfo(node.getInfo() + temp.getKey() + ",");
+                        temp.setWeight(dist);
+                        que.add(temp);
                     }
                 }
             }
@@ -149,20 +148,20 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
 
     @Override
     public List<node_data> shortestPath(int src, int dest) {
-        if(this.shortestPathDist(src, dest) != -1){              //checks if there is a path between the nodes
-            LinkedList<node_data> path = new LinkedList<>();    //the list that will be returned
+        if(this.shortestPathDist(src, dest) != -1){
+            LinkedList<node_data> path = new LinkedList<>();
             node_data node = _graph.getNode(src);
-            path.add(node);                                      //adds the first node in the path (src node)
-            if(src == dest){                                     //if src is the only node in the path return the path
+            path.add(node);
+            if(src == dest){
                 return path;
             }
-            String info = _graph.getNode(dest).getInfo();        //get the path that was stored inside the dest info
-            while(!info.isEmpty()){                              //extract the nodes from info until there is none
-                int divider = info.indexOf(",");                 //the divider between every node key in info
-                String key = info.substring(0,divider);          //extract the node key from the path
+            String info = _graph.getNode(dest).getInfo();
+            while(!info.isEmpty()){
+                int divider = info.indexOf(",");
+                String key = info.substring(0,divider);
                 node = _graph.getNode(Integer.parseInt(key));
-                path.add(node);                                  //add the extracted node
-                info = info.substring(divider+1);                //remove the extracted node from info
+                path.add(node);
+                info = info.substring(divider+1);
             }
             return path;
         }

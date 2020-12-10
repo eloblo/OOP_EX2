@@ -12,7 +12,7 @@ public class Ex2 implements Runnable{
 
     private static Frame _win;
     private static Arena _ar;
-    private static int _id = -1;
+    private static long _id = -1;
     private static int _scenario = 0;
     private static ArrayList<Thread> _agents = new ArrayList<>();
     private static directed_weighted_graph _graph;
@@ -34,7 +34,7 @@ public class Ex2 implements Runnable{
             log.dispose();
         }
         else{
-            _id = Integer.parseInt(a[0]);
+            _id = Long.parseLong(a[0]);
             _scenario = Integer.parseInt(a[1]);
         }
         client.start();
@@ -44,13 +44,13 @@ public class Ex2 implements Runnable{
     public void run() {
         game_service game = Game_Server_Ex2.getServer(_scenario); // you have [0,23] games
         if(_id > -1){
-            int id = _id;
+            long id = _id;
             game.login(id);
         }
         init(game);
 
         game.startGame();
-        _win.setTitle("Ex2 - OOP: (NONE trivial Solution) "+game.toString());
+        _win.setTitle("Ex2 - OOP: Gotta catch them all! "+game.toString());
         int ind=0;
         long dt=1000/60;  //60FPS
         moveAgents(game);
@@ -99,8 +99,6 @@ public class Ex2 implements Runnable{
         _win = new Frame("Ex2", game);
         _win.setSize(1000, 700);
         _win.update(_ar);
-
-
         _win.show();
         String info = game.toString();
         JSONObject line;

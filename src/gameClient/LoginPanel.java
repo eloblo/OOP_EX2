@@ -3,29 +3,29 @@ package gameClient;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
 
+/** a simple GUI that allows the choosing of different
+ *  levels, in addition to a login option to upload player
+ *  score. there is an option of "Free play" that allows playing
+ *  without login in. (mainly for testing the game and it's components)
+ */
 public class LoginPanel implements ActionListener {
 
     private static boolean _open = true;
     private static int _scenario = 0;
-    private static int _id = -1;
+    private static long _id = -1;
     private static JComboBox _sceneNum;
     private static JButton _freePlay;
     private static JButton _loginButton;
     private static JTextField _userTxt;
     private static JFrame login;
 
-    public static void main(String[] a){
-      //  loginPanel();
-    }
-
     public static void loginPanel(){
         JPanel panel = new JPanel();
         login = new JFrame();
         login.setSize(330,160);
         panel.setLayout(null);
-       // login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         login.add(panel);
         JLabel user = new JLabel("User:");
         user.setBounds(10,20,80,25);
@@ -71,7 +71,7 @@ public class LoginPanel implements ActionListener {
         }
         if(e.getSource() == _loginButton){
             try{
-                int id = Integer.parseInt(_userTxt.getText());
+                long id = Integer.parseInt(_userTxt.getText());
                 if(id > 0){
                     _id = id;
                     _open = false;
@@ -90,7 +90,7 @@ public class LoginPanel implements ActionListener {
         return _open;
     }
 
-    public int getID(){
+    public long getID(){
         return _id;
     }
 

@@ -12,10 +12,9 @@ import java.util.List;
 
 /**
  * This class represents a very simple GUI class to present a
- * game on a graph - you are welcome to use this class - yet keep in mind
- * that the code is not well written in order to force you improve the
- * code and not to take it "as is".
- *
+ * game on a graph. an improved MyFrame class.
+ * shows the graph, agents, pokemons, score and a timer
+ * to the end of the game.
  */
 public class Frame extends JFrame{
     private Arena _ar;
@@ -39,6 +38,7 @@ public class Frame extends JFrame{
         directed_weighted_graph g = _ar.getGraph();
         _w2f = Arena.w2f(g,frame);
     }
+
     public void paint(Graphics g) {
         int w = this.getWidth();
         int h = this.getHeight();
