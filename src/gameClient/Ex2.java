@@ -33,7 +33,7 @@ public class Ex2 implements Runnable{
             log.loginPanel();                      //launches the login GUI
             while(log.isOpen()){                   //wait for the user to choose his options
                 try {
-                    client.sleep(10);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
