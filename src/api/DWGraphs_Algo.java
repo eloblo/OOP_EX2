@@ -81,7 +81,7 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
     }
 
     /** checks if every node is connected to every other node.
-     * utilizes kosoraju algorithm.
+     * utilizes Kosoraju algorithm.
      * @return if the graph is strongly connected
      */
     @Override
@@ -97,26 +97,26 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
         while(!q.isEmpty()){            //run until checked every node
             src = q.remove();
             Collection<edge_data> edges = _graph.getE(src.getKey());
-            for(edge_data e : edges){
+            for(edge_data e : edges){                                   //check every edge pointing from the node
                 node_data node = _graph.getNode(e.getDest());
-                if(node.getTag() == 0){
+                if(node.getTag() == 0){                                 //check if the new node is visited
                     q.add(node);
                 }
-                node.setTag(1);
+                node.setTag(1);                                         //tag as visited
             }
         }
-        for(node_data node1 : nodes){
-            if(node1.getTag() == 0){
+        for(node_data node1 : nodes){        //check if there was an unvisited node
+            if(node1.getTag() == 0){         //if there is then we cant reach him
                 return false;
             }
         }
-        clearTag();
+        clearTag();                          //reset the tags and repeat the function only when the edges are reversed
         q = new LinkedList<node_data>();
         src = nodes.get(0);
         q.add(src);
         while(!q.isEmpty()){
             src = q.remove();
-            Collection<edge_data> edges = _graph.getBE(src.getKey());
+            Collection<edge_data> edges = _graph.getBE(src.getKey());   //check every edge pointing to node
             for(edge_data e : edges){
                 node_data node = _graph.getNode(e.getSrc());
                 if(node.getTag() == 0){
@@ -133,35 +133,43 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
         return true;
     }
 
+    /** calculates the shortest distance from source node to
+     *  the destination node. utilizes Dijkstra algorithm.
+     * @param src - start node
+     * @param dest - end (target) node
+     * @return the shortest distance by the weight of the edges
+     * @return -1 if there is no path.
+     */
     @Override
     public double shortestPathDist(int src, int dest) {
         if(src == dest){
             return 0;
         }
-        this.clearWeight();
+        this.clearWeight();        //clear nodes weight
         node_data node, nDest;
         node = _graph.getNode(src);
         nDest = _graph.getNode(dest);
-        if(node != null && nDest != null){
-            node.setInfo("");
-            PriorityQueue<node_data> que = new PriorityQueue<>(_graph.nodeSize(), _comp);
+        if(node != null && nDest != null){   //check if src and dest exist
+            node.setInfo("");                //node info will store the nodes in the path
+            PriorityQueue<node_data> que = new PriorityQueue<>(_graph.nodeSize(), _comp);  //a priority queue that will hold the nodes
             que.add(node);
-            while(!que.isEmpty()){
+            while(!que.isEmpty()){            //if the queue then all the nodes were checked
                 node = que.remove();
-                if(node.getKey() == dest){
-                    return node.getWeight();
+                if(node.getKey() == dest){    //check if we reached the destination
+                    return node.getWeight();  //return the distance
                 }
                 Collection<edge_data> edges = _graph.getE(node.getKey());
-                for(edge_data e : edges){
+                for(edge_data e : edges){                              //check every pointed neighboring node
                     node_data temp = _graph.getNode(e.getDest());
-                    double dist = node.getWeight() + e.getWeight();
+                    double dist = node.getWeight() + e.getWeight();    //sum the weight of the nodes
+                    //check if the distance is shorter or if we are starting a new path and that the node we reached is not the src
                     if((dist < temp.getWeight() || temp.getWeight() == 0 )&& temp.getKey() != src){
                         if(dist < temp.getWeight()){
-                            que.remove(temp);
+                            que.remove(temp);      //if we found a shorter path to node remove the old longer path
                         }
-                        temp.setInfo(node.getInfo() + temp.getKey() + ",");
-                        temp.setWeight(dist);
-                        que.add(temp);
+                        temp.setInfo(node.getInfo() + temp.getKey() + ","); //store the node path in the node info
+                        temp.setWeight(dist);                               //store the distance in the node's weight
+                        que.add(temp);                                      //add to the queue
                     }
                 }
             }
@@ -169,21 +177,27 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
         return -1;
     }
 
+    /** calculate the shortest path from src node to dest node.
+     * @param src - start node
+     * @param dest - end (target) node
+     * @return a list of nodes in the path from src to dest.
+     * @return null if there is bo path.
+     */
     @Override
     public List<node_data> shortestPath(int src, int dest) {
-        if(this.shortestPathDist(src, dest) != -1){
+        if(this.shortestPathDist(src, dest) != -1){            //check if there is a valid path
             LinkedList<node_data> path = new LinkedList<>();
-            node_data node = _graph.getNode(src);
+            node_data node = _graph.getNode(src);              //add the src node to the head of the list
             path.add(node);
-            if(src == dest){
+            if(src == dest){  //an empty path
                 return path;
             }
-            String info = _graph.getNode(dest).getInfo();
-            while(!info.isEmpty()){
-                int divider = info.indexOf(",");
-                String key = info.substring(0,divider);
+            String info = _graph.getNode(dest).getInfo();      //in the shortestPathDist() also stores the path as a string
+            while(!info.isEmpty()){                            //convert the string to node list
+                int divider = info.indexOf(",");               //divider between the nodes in the string
+                String key = info.substring(0,divider);        //extract node from the string
                 node = _graph.getNode(Integer.parseInt(key));
-                path.add(node);
+                path.add(node);                                //add the node
                 info = info.substring(divider+1);
             }
             return path;
@@ -191,6 +205,10 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
         return null;
     }
 
+    /** save the graph to a Json file.
+     * @param file - the file name (may include a relative path).
+     * @return if the save was successful.
+     */
     @Override
     public boolean save(String file) {
         JsonObject Json_obj = new JsonObject();
@@ -199,26 +217,26 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
         JsonArray edges = new JsonArray();
         JsonArray nodes = new JsonArray();
         Collection<node_data> V = _graph.getV();
-        for(node_data node : V){
+        for(node_data node : V){                  //add every node to the json array
             Jnode = new JsonObject();
-            geo_location GPos = node.getLocation();
+            geo_location GPos = node.getLocation();             //add the position of the node to node json object
             String pos = GPos.x()+","+ GPos.y()+","+ GPos.z();
             Jnode.addProperty("pos",pos);
-            Jnode.addProperty("id",node.getKey());
+            Jnode.addProperty("id",node.getKey());      //add the id of the node
             nodes.add(Jnode);
             Collection<edge_data> Es = _graph.getE(node.getKey());
-            for(edge_data edge : Es){
+            for(edge_data edge : Es){                               //add all edges to the json array
                 Jedge = new JsonObject();
-                Jedge.addProperty("src", edge.getSrc());
+                Jedge.addProperty("src", edge.getSrc());    //add all the data of edges to edge json object
                 Jedge.addProperty("w", edge.getWeight());
                 Jedge.addProperty("dest", edge.getDest());
                 edges.add(Jedge);
             }
         }
-        Json_obj.add("Edges",edges);
+        Json_obj.add("Edges",edges);    //add the arrays to main json object
         Json_obj.add("Nodes",nodes);
         try{
-            FileWriter writer = new FileWriter(file);
+            FileWriter writer = new FileWriter(file);   //write the main json object to the file
             writer.write(Json_obj.toString());
             writer.close();
             return true;
@@ -229,37 +247,41 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
         return false;
     }
 
+    /** load a graph from a json file.
+     * @param file - file name of JSON file
+     * @return if the load was successful.
+     */
     @Override
     public boolean load(String file) {
-        DWGraph_DS newGr = new DWGraph_DS();
+        DWGraph_DS newGr = new DWGraph_DS();  //the new graph that will be made from the json
         JsonObject json_obj;
         try{
-            String Jstr = new String(Files.readAllBytes(Paths.get(file)));
+            String Jstr = new String(Files.readAllBytes(Paths.get(file)));   //read the file
             json_obj = JsonParser.parseString(Jstr).getAsJsonObject();
-            JsonArray Jnodes = json_obj.getAsJsonArray("Nodes");
-            for(JsonElement node : Jnodes){
+            JsonArray Jnodes = json_obj.getAsJsonArray("Nodes");  //read the node array
+            for(JsonElement node : Jnodes){               //convert the array to nodes
                 JsonObject temp = (JsonObject) node;
                 int id = temp.get("id").getAsInt();
-                NodeData newNode = new NodeData(id);
+                NodeData newNode = new NodeData(id);      //create the node
                 String pos = temp.get("pos").getAsString();
-                int firstComma = pos.indexOf(",");
+                int firstComma = pos.indexOf(",");        //convert the pos string to GeoLocation
                 int lastComma = pos.lastIndexOf(",");
                 double x = Double.parseDouble(pos.substring(0,firstComma));
                 double y = Double.parseDouble(pos.substring(firstComma+1,lastComma));
                 double z = Double.parseDouble(pos.substring(lastComma+1));
                 GeoLocation GL = new GeoLocation(x,y,z);
-                newNode.setLocation(GL);
+                newNode.setLocation(GL);  //set the new position
                 newGr.addNode(newNode);
             }
-            JsonArray Jedges = json_obj.getAsJsonArray("Edges");
+            JsonArray Jedges = json_obj.getAsJsonArray("Edges");  //convert the edge array to edges
             for(JsonElement edge : Jedges){
-                JsonObject temp = (JsonObject) edge;
+                JsonObject temp = (JsonObject) edge;    //create an edge from the edge json object
                 int src = temp.get("src").getAsInt();
                 int dest = temp.get("dest").getAsInt();
                 double weight = temp.get("w").getAsDouble();
                 newGr.connect(src,dest,weight);
             }
-            _graph = newGr;
+            _graph = newGr;  //set the graph
             return true;
         }
         catch (Exception e){
@@ -268,32 +290,37 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
         return false;
     }
 
+    /** convert a json string to a graph.
+     *  is based on the load() method.
+     * @param Jstr
+     * @return the graph made from the Json string
+     */
     public directed_weighted_graph Json2Graph(String Jstr){
         DWGraph_DS newGr = new DWGraph_DS();
         JsonObject json_obj;
         json_obj = JsonParser.parseString(Jstr).getAsJsonObject();
-        JsonArray Jnodes = json_obj.getAsJsonArray("Nodes");
+        JsonArray Jnodes = json_obj.getAsJsonArray("Nodes");  //convert the json array to nodes
         for(JsonElement node : Jnodes){
             JsonObject temp = (JsonObject) node;
             int id = temp.get("id").getAsInt();
-            NodeData newNode = new NodeData(id);
-            String pos = temp.get("pos").getAsString();
+            NodeData newNode = new NodeData(id);        //create the ne node by the id
+            String pos = temp.get("pos").getAsString(); //convert the position json string to a GeoLocation
             int firstComma = pos.indexOf(",");
             int lastComma = pos.lastIndexOf(",");
             double x = Double.parseDouble(pos.substring(0,firstComma));
             double y = Double.parseDouble(pos.substring(firstComma+1,lastComma));
             double z = Double.parseDouble(pos.substring(lastComma+1));
             GeoLocation GL = new GeoLocation(x,y,z);
-            newNode.setLocation(GL);
-            newGr.addNode(newNode);
+            newNode.setLocation(GL);   //set the new position
+            newGr.addNode(newNode);    //add the node
         }
-        JsonArray Jedges = json_obj.getAsJsonArray("Edges");
+        JsonArray Jedges = json_obj.getAsJsonArray("Edges");  //convert the edges json array to edges
         for(JsonElement edge : Jedges){
-            JsonObject temp = (JsonObject) edge;
+            JsonObject temp = (JsonObject) edge;         //extract the data of the edge json object
             int src = temp.get("src").getAsInt();
             int dest = temp.get("dest").getAsInt();
             double weight = temp.get("w").getAsDouble();
-            newGr.connect(src,dest,weight);
+            newGr.connect(src,dest,weight);    //add the edges
         }
         return newGr;
     }

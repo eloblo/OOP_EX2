@@ -41,7 +41,7 @@ public class Arena {
     public void setPokemons(List<CL_Pokemon> f) {
         this._pokemons = f;
         for(CL_Pokemon pokemon : f){
-            updateEdge(pokemon,_gg);
+            updateEdge(pokemon,_gg);  //added this line to be able to get the edge of pokemons
         }
     }
     public void setAgents(List<CL_Agent> f) {
