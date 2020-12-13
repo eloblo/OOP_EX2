@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** main class. launches the game by setting the
- *  graph agents and pokemons and closes when the
+ *  graph agents and pokemons, closes when the
  *  time is up and game finishes. is also responsible
  *  for opening the login GUI and game GUI, in addition
  *  to repaint and update the GUI.
@@ -24,7 +24,8 @@ public class Ex2 implements Runnable{
     private static directed_weighted_graph _graph;                 //the graph shown
 
     /** main method, launches the game and the GUIs.
-     * @param a
+     * @param a a[0] = id, a[1] = level.
+     * if there are no parameter launches login window.
      */
     public static void main(String[] a) {
         Thread client = new Thread(new Ex2());
@@ -114,7 +115,7 @@ public class Ex2 implements Runnable{
         _win.setSize(1000, 700);
         _win.update(_ar);
         _win.show();
-        String info = game.toString();
+        String info = game.toString();   //build the game from the server
         JSONObject line;
         try {
             line = new JSONObject(info);
