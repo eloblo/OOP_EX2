@@ -22,8 +22,8 @@ import java.util.List;
  *
  */
 public class Arena {
-    public static final double EPS1 = 0.001, EPS2=EPS1*EPS1, EPS=EPS2;
-    private directed_weighted_graph _gg;
+    public static final double EPS1 = 0.0001, EPS2=EPS1*EPS1, EPS=EPS2; //decreased EPS1 from 0.001.
+    private directed_weighted_graph _gg;                                //caused bugs because it wasn't accurate enough
     private List<CL_Agent> _agents;
     private List<CL_Pokemon> _pokemons;
     private List<String> _info;
