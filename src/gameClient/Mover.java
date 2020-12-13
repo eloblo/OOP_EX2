@@ -115,6 +115,8 @@ public class Mover {
         weight *= 1000;                 //convert the weight and speed to milliseconds
         double slpTime = weight/speed;
         slpTime++;
+     //   System.out.println(_pokemon.get_edge().getSrc()+"->"+ _pokemon.get_edge().getDest());
+     //   System.out.println(currNode+"->"+nextNode);
         return (long) slpTime;
     }
 
@@ -148,6 +150,13 @@ public class Mover {
         int ans = -1;  //default answer
             List<CL_Pokemon> pokes = _ar.getPokemons();   //calculate what pokemon to pursue
             int finalDest = findPkm(pokes, src);
+            if(_agT.getFlag()){
+                _agT.setFlag(false);
+                for(int i = 0; i < _whiteList.size()-1; i++){    //reserve pokemon so the agents would not
+                    reserveNextPok(pokes, finalDest);           //go after the same pokemon like its a competition
+                }
+                return finalDest;
+            }
             List<node_data> path = _graphAlgo.shortestPath(src, finalDest);  //calculate movement path
             for(int i = 0; i < _whiteList.size()-1; i++){    //reserve pokemon so the agents would not
                 reserveNextPok(pokes, finalDest);           //go after the same pokemon like its a competition
@@ -174,8 +183,10 @@ public class Mover {
                 int edgeSrc = edge.getSrc();
                 int edgeDest = edge.getDest();
                 double value = edge.getWeight();
-                if (edgeDest == src) {  //in case of a U turn
-                    return edge.getSrc();
+                if (edgeSrc == src) {  //if agent reached the source of the pokemon
+                    _agT.setFlag(true);//then catch it
+                    _pokemon = pok;    //set pokemon as the target
+                    return edgeDest;
                 }
                 double dist = _graphAlgo.shortestPathDist(src,edgeSrc);  //calculate the distance
                 if(dist != -1){                //check if there is distance
@@ -184,7 +195,7 @@ public class Mover {
                 }
                 if (dist < minDist && dist > 0) {  //checks if the distance is the smallest
                     minDist = dist;
-                    ans = edge.getDest();;
+                    ans = edge.getSrc();;
                     _pokemon = pok;               //sets the pokemon as the current target
                 }
             }
