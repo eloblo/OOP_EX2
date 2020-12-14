@@ -159,7 +159,7 @@ the agent contains:
 
 ### util folder
 
-hold number of pre built classes. they are responsible to claculate and maintain postion of the games' elements.
+hold number of pre built classes. they are responsible to calculate and maintain postion of the games' elements.
 like the location of agents and to claculate how to resize the arena after resizing the game's UI window.
 
 
