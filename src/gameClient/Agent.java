@@ -36,7 +36,7 @@ public class Agent implements Runnable {
      */
     @Override
     public void run() {
-        long dt = 0;
+        long dt;
         while(_game.isRunning()){
             dt = _mover.init(this, _agent);   //tell the agent to move and receives
             try {                       //sleeping time to reduce unnecessary movement calls
@@ -54,7 +54,7 @@ public class Agent implements Runnable {
     }
 
     /** sets the new previous pokemon that was targeted.
-     * @param _prevPok
+     * @param _prevPok the previous pokemon that was targeted.
      */
     public void setPrevPok(CL_Pokemon _prevPok) {
         this._prevPok = _prevPok;
@@ -67,8 +67,8 @@ public class Agent implements Runnable {
         return _prevEdge;
     }
 
-    /** sets the previuos edge visited.
-     * @param _prevEdge
+    /** sets the previous edge visited.
+     * @param _prevEdge the previous edge that was passed.
      */
     public void setPrevEdge(edge_data _prevEdge) {
         this._prevEdge = _prevEdge;
@@ -83,7 +83,7 @@ public class Agent implements Runnable {
 
     /** sets a new agent to mange.
      *  mainly for updating the agent after the game's move().
-     * @param agent
+     * @param agent the agent to manage
      */
     public void setAgent(CL_Agent agent) {
         _agent = agent;
@@ -98,7 +98,7 @@ public class Agent implements Runnable {
 
     /** sets if the agent reached a pokemon.
      *  mainly for mover algorithms.
-     * @param flag
+     * @param flag if we reached the pokemon
      */
     public void setFlag(boolean flag) {
         this._inSight = flag;

@@ -115,8 +115,6 @@ public class Mover {
         weight *= 1000;                 //convert the weight and speed to milliseconds
         double slpTime = weight/speed;
         slpTime++;
-     //   System.out.println(_pokemon.get_edge().getSrc()+"->"+ _pokemon.get_edge().getDest());
-     //   System.out.println(currNode+"->"+nextNode);
         return (long) slpTime;
     }
 
@@ -138,7 +136,9 @@ public class Mover {
         double v = _agent.getValue();
         int dest = this.nextNode(src);      //set the next node of the agent
         _game.chooseNextEdge(_agent.getID(), dest);
-        System.out.println("Agent: " + id + ", val: " + v + "   turned to node: " + dest);  //print current game status
+        if(_agent.getNextNode() == -1){
+            System.out.println("Agent: " + id + ", val: " + v + "   turned to node: " + dest);  //print current game status
+        }
         return dest;
     }
 
@@ -152,13 +152,13 @@ public class Mover {
             int finalDest = findPkm(pokes, src);
             if(_agT.getFlag()){
                 _agT.setFlag(false);
-                for(int i = 0; i < _whiteList.size()-1; i++){    //reserve pokemon so the agents would not
+                for(int i = 0; i < _AC-1; i++){    //reserve pokemon so the agents would not
                     reserveNextPok(pokes, finalDest);           //go after the same pokemon like its a competition
                 }
                 return finalDest;
             }
             List<node_data> path = _graphAlgo.shortestPath(src, finalDest);  //calculate movement path
-            for(int i = 0; i < _whiteList.size()-1; i++){    //reserve pokemon so the agents would not
+            for(int i = 0; i < _AC-1; i++){    //reserve pokemon so the agents would not
                 reserveNextPok(pokes, finalDest);           //go after the same pokemon like its a competition
             }
             if(path != null){           //remove the source node from the path
@@ -195,7 +195,7 @@ public class Mover {
                 }
                 if (dist < minDist && dist > 0) {  //checks if the distance is the smallest
                     minDist = dist;
-                    ans = edge.getSrc();;
+                    ans = edge.getSrc();
                     _pokemon = pok;               //sets the pokemon as the current target
                 }
             }
@@ -218,7 +218,7 @@ public class Mover {
         CL_Pokemon pokemon = null;            //a fictive replacement for _pokemon
         for (CL_Pokemon pok : pokes) {        //search for closest pokemon
             String pos = pok.getLocation().toString();  //used to identify the pokemon as they don't have id
-            if(!_blackList.contains(pos) || _whiteList.contains(pos)){ //check if the pokemon isn't targeted
+            if(!_blackList.contains(pos) || _whiteList.contains(pos)){ //check if the pokemon isn't targeted near by
                 edge_data edge = pok.get_edge();
                 int edgeSrc = edge.getSrc();
                 double value = edge.getWeight();
