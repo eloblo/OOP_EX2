@@ -14,48 +14,48 @@ is also able to claculate distance between two geo_location objects.
 represent a node (vertix) in the graph.
 the node contains:
 
-key: the node's id (value). is uniqe to each node.
-tag: an int meant for taging the node in algorithmic functions.
-weight: a double that stores the weight of the node, 
+* key: the node's id (value). is uniqe to each node.
+* tag: an int meant for taging the node in algorithmic functions.
+* weight: a double that stores the weight of the node, 
 but in this project is used as a container for algorithmic functions.
-info: a string of information of the edge, but in this project is used as a container for algorithmic functions.
-pos: a geo_location object that holds the node's location in 3D space.
-E: a collection of edges that start in this node.
-BE: a collection of "back edge", edges that end in this node.
+* info: a string of information of the edge, but in this project is used as a container for algorithmic functions.
+* pos: a geo_location object that holds the node's location in 3D space.
+* E: a collection of edges that start in this node.
+* BE: a collection of "back edge", edges that end in this node.
 
 ### EdgeData
 represent an edge in the graph. is a private class in DWGraph_DS.
 contains the following:
 
-weight: a double that stores the weight of the edge. 
-src,dest: the source and destination nodes that make up the edge.
-tag: an int meant for taging the node in algorithmic functions.
-info: the meta info of the edge in a form of a string.
+* weight: a double that stores the weight of the edge. 
+* src,dest: the source and destination nodes that make up the edge.
+* tag: an int meant for taging the node in algorithmic functions.
+* info: the meta info of the edge in a form of a string.
 
 ### DWGraph_DS
 represent the main directed weighted graph.
 his nodes and edges can be removed and added to the user's needs.
 contains the following:
 
-V: a collection of nodes that make up the graph. also contains the total number on nodes in the graph.
+* V: a collection of nodes that make up the graph. also contains the total number on nodes in the graph.
 all the edges of the graph are stored in their respective nodes, but are accessible from the graph.
-EC: an edge counter. stores the total number of edges in the graph.
-MC: the total number of modification done to the graph. for testing purposes.
+* EC: an edge counter. stores the total number of edges in the graph.
+* MC: the total number of modification done to the graph. for testing purposes.
 
 ### DWGraph_Algo
 is class containig algorithms to manipulate and calculate information in the graph.
 the class contains a main graph that is worked on and a custom comparator for intarnal functions.
 the class allows the following:
 
-copy: create and return a copy of the current graph.
-isConnected: checkes if the graph is strongly connected. utilizes the Korsaju algorithm.
-shortestPathDist: calculate the shortest distance, if available, from point a to point b.
-shortestPath: claculate the shortest path, if available, from point a to point b. 
+* copy: create and return a copy of the current graph.
+* isConnected: checkes if the graph is strongly connected. utilizes the Korsaju algorithm.
+* shortestPathDist: calculate the shortest distance, if available, from point a to point b.
+* shortestPath: claculate the shortest path, if available, from point a to point b. 
 the path is represented by a list of nodes starting from the source. utulizes the Dijkstra algorithm.
-save: saves the current graph to a Json file.
-load: load a graph from a Json file, and sets it as the current graph.
-Json2Graph: create a graph from a Json string.
-cast: create a copy of a directed_weighted_graph object to a DWGraph_DS object.
+* save: saves the current graph to a Json file.
+* load: load a graph from a Json file, and sets it as the current graph.
+* Json2Graph: create a graph from a Json string.
+* cast: create a copy of a directed_weighted_graph object to a DWGraph_DS object.
 
 the api folder contains tests for the classes in the tests folder.
 
@@ -74,9 +74,9 @@ all the game elements are found in src\gameClient folder. the application is mad
 
 the java application. can be run from desktop UI and command line >java -jar Ex2.jar [id] [level].
 int the command line the file can run in two way.
-1) with out parameter, in wich a login window will pop up. requiring to choose a level and the option to log on
+* 1) with out parameter, in wich a login window will pop up. requiring to choose a level and the option to log on
 the game server in order to upload the score. the window has a "Free play" option if the user doesn't want to play without logining in.
-2) when entering parameters, if the parameters are valid, the game will run without the login window as being loged in. 
+* 2) when entering parameters, if the parameters are valid, the game will run without the login window as being loged in. 
 
 ### Ex2
 
@@ -84,12 +84,12 @@ the main java class (not to be confused with the jar file) launches the game and
 the class is responsible to initalize the game and to maintain the GUI.
 the class contains:
 
-win: the main GUI frame that present the game to the user.
-ar: the game arena. holds the games information since the last move.
-id: the login id.
-scenario: the chosen game level.
-agents: a list of threads that run the agents movment.
-graph: a directinal_weighted_graph graph that the game is set on.
+* win: the main GUI frame that present the game to the user.
+* ar: the game arena. holds the games information since the last move.
+* id: the login id.
+* scenario: the chosen game level.
+* agents: a list of threads that run the agents movment.
+* graph: a directinal_weighted_graph graph that the game is set on.
 
 ### Frame
 
@@ -109,13 +109,13 @@ closing the panel will terminate the program.
 a class that extands runnable and tells the agent that its managing to move in the apropriate time.
 the class holds:
 
-agent: the Agent's current CL_Agent objects that moves in the game.
-prevPok: previously targeted pokemon object. mainly for algorithmic purposes.
-prevEdge: the last edge the agent passed mainly for algorithmic purposes.
-white List: a hashSet of pokemons' postion that are exclusive to the agent.
-game: the main game service object.
-mover: an object resposible for the movment algorithms.
-inSight: a boolean flag, mainly for algorithmic purposes.
+* agent: the Agent's current CL_Agent objects that moves in the game.
+* prevPok: previously targeted pokemon object. mainly for algorithmic purposes.
+* prevEdge: the last edge the agent passed mainly for algorithmic purposes.
+* white List: a hashSet of pokemons' postion that are exclusive to the agent.
+* game: the main game service object.
+* mover: an object resposible for the movment algorithms.
+* inSight: a boolean flag, mainly for algorithmic purposes.
 
 ### Mover
 
@@ -124,14 +124,14 @@ the class searches for pokemons, manages and update the different agents, clacul
 to reach the pokemon with minimal movement and as fast as possible.
 the class contains:
 
-ar: current arena of the game.
-agT: the current Agent object he is managing, along of with variables to store all the agent's data.
-pokemon: the current target of the current agent.
-black List: a list of pokemons' postion that are not allowed to be targeted, except their allocated agents.
-graph: the graph that the level is built on.
-graphAlgo: a DWGraph_Algo objects that claculate paths and distances for the agents.
-AC: number of total agents in the game.
-reset: a counter that when reached is limit will triger a reset to avoid congestions.
+* ar: current arena of the game.
+* agT: the current Agent object he is managing, along of with variables to store all the agent's data.
+* pokemon: the current target of the current agent.
+* black List: a list of pokemons' postion that are not allowed to be targeted, except their allocated agents.
+* graph: the graph that the level is built on.
+* graphAlgo: a DWGraph_Algo objects that claculate paths and distances for the agents.
+* AC: total number of agents in the game.
+* reset: a counter that when reached is limit will triger a reset to avoid congestions.
 
 ### Arena
 
@@ -152,10 +152,10 @@ a pre built class that represnt the games agents.
 the agent is remade with each move of the game, and is made from the Json String of the game server.
 the agent contains:
 
-speed: the speed is calculated as edge-weight per second, and is increased after he reaches a certain amount of score.
-curr_edge: the edge the agent is currently located.
-curr_node: the node the agent is currenly located, or the source of the edge he is currently located.
-pos: the current location of the agent.
+* speed: the speed is calculated as edge-weight per second, and is increased after he reaches a certain amount of score.
+* curr_edge: the edge the agent is currently located.
+* curr_node: the node the agent is currenly located, or the source of the edge he is currently located.
+* pos: the current location of the agent.
 
 ### util folder
 
@@ -166,38 +166,3 @@ like the location of agents and to claculate how to resize the arena after resiz
 the gameClient folder also contains MyFrame, Ex2_client and simpleGameCLient, which are pre built classes
 that the main classes are built on. they are not to be used only for testin purposes as they contain flawed
 and primitive solutions and algorithms.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
