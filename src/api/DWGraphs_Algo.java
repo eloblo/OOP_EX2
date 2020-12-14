@@ -253,35 +253,9 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
      */
     @Override
     public boolean load(String file) {
-        DWGraph_DS newGr = new DWGraph_DS();  //the new graph that will be made from the json
-        JsonObject json_obj;
         try{
-            String Jstr = new String(Files.readAllBytes(Paths.get(file)));   //read the file
-            json_obj = JsonParser.parseString(Jstr).getAsJsonObject();
-            JsonArray Jnodes = json_obj.getAsJsonArray("Nodes");  //read the node array
-            for(JsonElement node : Jnodes){               //convert the array to nodes
-                JsonObject temp = (JsonObject) node;
-                int id = temp.get("id").getAsInt();
-                NodeData newNode = new NodeData(id);      //create the node
-                String pos = temp.get("pos").getAsString();
-                int firstComma = pos.indexOf(",");        //convert the pos string to GeoLocation
-                int lastComma = pos.lastIndexOf(",");
-                double x = Double.parseDouble(pos.substring(0,firstComma));
-                double y = Double.parseDouble(pos.substring(firstComma+1,lastComma));
-                double z = Double.parseDouble(pos.substring(lastComma+1));
-                GeoLocation GL = new GeoLocation(x,y,z);
-                newNode.setLocation(GL);  //set the new position
-                newGr.addNode(newNode);
-            }
-            JsonArray Jedges = json_obj.getAsJsonArray("Edges");  //convert the edge array to edges
-            for(JsonElement edge : Jedges){
-                JsonObject temp = (JsonObject) edge;    //create an edge from the edge json object
-                int src = temp.get("src").getAsInt();
-                int dest = temp.get("dest").getAsInt();
-                double weight = temp.get("w").getAsDouble();
-                newGr.connect(src,dest,weight);
-            }
-            _graph = newGr;  //set the graph
+            String jstr = new String(Files.readAllBytes(Paths.get(file)));   //read the file
+            _graph = (DWGraph_DS) Json2Graph(jstr); //set the graph
             return true;
         }
         catch (Exception e){
