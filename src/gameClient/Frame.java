@@ -79,11 +79,16 @@ public class Frame extends JFrame{
 
     private void drawScore(Graphics g){
         List<CL_Agent> agents = _ar.getAgents();
-        double score = 0;
+        double totalScore = 0;
+        double score;
         for(CL_Agent agent : agents){
-            score += agent.getValue();
+            totalScore += agent.getValue();
+            score = agent.getValue();
+            g.setFont(new Font("Arial",Font.BOLD,16));
+            g.drawString("agent "+agent.getID()+": "+String.valueOf(score), this.getWidth()-125, 90+20*agent.getID());
         }
-        g.drawString(String.valueOf(score), this.getWidth()-100, 70);
+        g.setFont(new Font("Arial",Font.BOLD,36));
+        g.drawString(String.valueOf(totalScore), this.getWidth()-100, 70);
     }
 
     private void drawGraph(Graphics g) {
