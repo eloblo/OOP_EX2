@@ -111,7 +111,7 @@ public class Ex2 implements Runnable{
         _ar = new Arena();                       //set game arena
         _ar.setGraph(_graph);
         _ar.setPokemons(Arena.json2Pokemons(fs));
-        _win = new Frame("Ex2", game);        //set game GUI
+        _win = new Frame("Ex2", game, _scenario);        //set game GUI
         _win.setSize(1000, 700);
         _win.update(_ar);
         _win.show();
