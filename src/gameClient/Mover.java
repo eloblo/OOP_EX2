@@ -243,7 +243,6 @@ public class Mover {
     //resets all the list to reset pokemon congestion.
     private void resetLists(){
         _blackList.clear();
-        _whiteList.clear();
         _reset = 0;
     }
 }

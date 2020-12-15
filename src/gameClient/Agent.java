@@ -18,6 +18,7 @@ public class Agent implements Runnable {
     private static game_service _game; //game service
     private static Mover _mover;       //the mover object
     private boolean _inSight = false;  //a flag for if there is a pokemon in front of the agent
+    private int reset = 0;             //a reset for managing congestion
 
     /** agent's constructor. initialize all variables
      * @param agent the CL_Agent that the Agent is managing.
@@ -39,6 +40,10 @@ public class Agent implements Runnable {
         long dt;
         while(_game.isRunning()){
             dt = _mover.init(this, _agent);   //tell the agent to move and receives
+            reset++;
+            if(reset == 100){     //reached cap reset the whiteList
+                whiteList.clear();
+            }
             try {                       //sleeping time to reduce unnecessary movement calls
                 Thread.sleep(dt);
             }
