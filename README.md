@@ -165,5 +165,5 @@ like the location of agents and to calculate how to resize the arena after resiz
 
 
 the gameClient folder also contains MyFrame, Ex2_client and simpleGameClient, which are pre built classes
-that the main classes are built on. they are not to be used only for testing purposes as they contain flawed
+that the main classes are built on. they are not to be used, only for testing purposes as they contain flawed
 and primitive solutions and algorithms.
