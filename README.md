@@ -2,6 +2,7 @@
 this project contains a representation on a directed weighted graph, as the
 DWGraph_DS class and his components under src\api folder.
 along with a jar application Ex2.jar under out\artifacts folder.
+user can run the game by opening the Ex2 jar file or by running it by cmd.
 
 ## directed weighted graph
 the data structure is made of several components to be used in the Ex2 application.
