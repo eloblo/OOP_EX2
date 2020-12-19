@@ -69,6 +69,7 @@ public class DWGraph_DS implements directed_weighted_graph {
                 srcNode.addEdge(edge);   //connect src
                 destNode.backEdge(edge); //connect dest
                 _EC++;
+                _MC++;
             }
         }
     }
@@ -147,7 +148,10 @@ public class DWGraph_DS implements directed_weighted_graph {
             NodeData destNode = (NodeData) _nodes.get(dest);
             destNode.removeBackEdge(src);               //remove the edge from the dest node;
             edge_data edge = srcNode.removeEdge(dest);  //remove the edge from the src node
-            if(edge != null) _EC--;                     //if the nodes are connected by an edge
+            if(edge != null) {
+                _EC--;                     //if the nodes are connected by an edge
+                _MC++;
+            }
             return edge;
         }
         return null;
