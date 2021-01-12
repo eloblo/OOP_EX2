@@ -1,10 +1,11 @@
-package api.Tests;
+package api;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import api.*;
+
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -129,5 +130,36 @@ public class GraphAlgoTest {
         DWGraph_DS emptyG = new DWGraph_DS();
         ga.init(emptyG);
         Assertions.assertTrue(ga.save("data/empty"));
+    }
+
+    @Test
+    void CC(){
+        g.addNode(new NodeData(0));
+        for(int i = 1; i < 10; i++){
+            g.addNode(new NodeData(i));
+            g.connect(i-1,i,i);
+        }
+        g.connect(6,5,11);
+        ArrayList<Integer> comp = ga.connected_component(5);
+        for(int i : comp){
+            System.out.println(i);
+        }
+    }
+
+    @Test
+    void CCS(){
+        g.addNode(new NodeData(0));
+        for(int i = 1; i < 4; i++){
+            g.addNode(new NodeData(i));
+            g.connect(i-1,i,i);
+        }
+        g.connect(3,1,5);
+        ArrayList<ArrayList<Integer>> comp = ga.connected_components();
+        for(ArrayList<Integer> sub : comp){
+            System.out.println("");
+            for(int i : sub){
+                System.out.print(i + ",");
+            }
+        }
     }
 }

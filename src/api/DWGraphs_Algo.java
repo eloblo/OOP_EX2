@@ -133,6 +133,67 @@ public class DWGraphs_Algo implements dw_graph_algorithms {
         return true;
     }
 
+    public ArrayList<Integer> connected_component(int key){
+        ArrayList<Integer> comp = new ArrayList<>();
+        if(_graph.getNode(key) == null){
+            return comp;
+        }
+        clearTag();
+        LinkedList<node_data> q = new LinkedList<>();
+        List<node_data> nodes = (List<node_data>) _graph.getV();
+        node_data src = _graph.getNode(key);
+        q.add(src);
+        while(!q.isEmpty()){
+            src = q.remove();
+            src.setTag(1);
+            Collection<edge_data> edges = _graph.getE(src.getKey());
+            for(edge_data e : edges){
+                node_data node = _graph.getNode(e.getDest());
+                if(node.getTag() == 0){
+                    q.add(node);
+                }
+            }
+        }
+
+        q = new LinkedList<node_data>();
+        src = _graph.getNode(key);
+        q.add(src);
+        while(!q.isEmpty()){
+            src = q.remove();
+            src.setTag(2);
+            src.setWeight(1);
+            Collection<edge_data> edges = _graph.getBE(src.getKey());   //check every edge pointing to node
+            for(edge_data e : edges){
+                node_data node = _graph.getNode(e.getSrc());
+                if(node.getTag() == 1){
+                    q.add(node);
+                }
+            }
+        }
+        for(node_data n : nodes){
+            if(n.getTag() == 2){
+                comp.add(n.getKey());
+            }
+        }
+        return comp;
+    }
+
+    public ArrayList<ArrayList<Integer>> connected_components(){
+        ArrayList<ArrayList<Integer>> comp = new ArrayList<>();
+        Collection<node_data> nodes = _graph.getV();
+        if(nodes.isEmpty()){
+            return comp;
+        }
+        clearWeight();
+        for(node_data node : nodes){
+            if(node.getWeight() != 1){
+                ArrayList<Integer> sub_comp = connected_component(node.getKey());
+                comp.add(sub_comp);
+            }
+        }
+        return comp;
+    }
+
     /** calculates the shortest distance from source node to
      *  the destination node. utilizes Dijkstra algorithm.
      * @param src - start node
